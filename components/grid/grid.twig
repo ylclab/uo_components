@@ -1,0 +1,7 @@
+{% if grid_items|length != 0 %}
+    <div data-id="{{ data.id }}" data-type="{{ data.type }}" class="{{ wrapper_classes|join(' ') }}">
+        <div class="{{ component_classes|join(' ') }}">
+            {{ grid_items }}
+        </div>
+    </div>
+{% endif %}

@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - link
+    - uo_components
+id: uo_components.link
+field_name: link
+entity_type: uo_component
+type: link
+settings: { }
+module: link
+cardinality: 1
+translatable: true
+indexes: { }
+persist_with_no_fields: false
+custom_storage: false

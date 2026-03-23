@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.uo_component.classes
+    - uo_components.uo_component_type.stack
+id: uo_component.stack.classes
+field_name: classes
+entity_type: uo_component
+bundle: stack
+label: 'Classes'
+required: false
+translatable: true
+default_value: { }
+default_value_callback: ''
+settings: { }
+field_type: string

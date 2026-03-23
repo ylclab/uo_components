@@ -1,0 +1,22 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: UO Components Field Formatter
+description: A field formatter that renders UO Components.
+group: University of Oregon
+props:
+  type: object
+  properties:
+    id:
+      type: string
+      default: ''
+slots:
+  items:
+    type: array
+    items:
+      type: object
+    default: [ ]
+libraryOverrides:
+  js:
+    code/dist/uo-components.js: {}
+  css:
+    theme:
+      code/dist/uo-components.css: {}

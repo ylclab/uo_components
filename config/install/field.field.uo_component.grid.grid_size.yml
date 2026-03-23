@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.uo_component.grid_size
+    - uo_components.uo_component_type.grid
+  module:
+    - options
+id: uo_component.grid.grid_size
+field_name: grid_size
+entity_type: uo_component
+bundle: grid
+label: 'Grid Size'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

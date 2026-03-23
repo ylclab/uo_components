@@ -1,0 +1,20 @@
+<div data-id="{{ data.id }}" data-type="{{ data.type }}" class="{{ wrapper_classes|join(' ') }}">
+    <div class="{{ component_classes|join(' ') }}">
+        <div class="envelope-feature__container">
+            <div class="envelope-feature__photo">
+                {{ photo }}
+            </div>
+            <div class="envelope-feature__content">
+                {% if header %}
+                    <h2 class="envelope-feature__content__title">{{ header }}</h2>
+                {% endif %}
+                {% if body %}
+                    <div class="envelope-feature__content__body">{{ body }}</div>
+                {% endif %}
+                {% if link %}
+                    {{ link }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

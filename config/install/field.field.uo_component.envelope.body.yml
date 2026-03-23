@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.uo_component.body
+    - uo_components.uo_component_type.envelope
+  module:
+    - text
+id: uo_component.envelope.body
+field_name: body
+entity_type: uo_component
+bundle: envelope
+label: 'Body'
+required: false
+translatable: true
+default_value: { }
+default_value_callback: ''
+settings: { }
+field_type: text_long

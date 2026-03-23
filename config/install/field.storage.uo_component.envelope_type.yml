@@ -1,0 +1,26 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - uo_components
+id: uo_components.envelope_type
+field_name: envelope_type
+entity_type: uo_component
+bundle: envelope
+type: list_string
+settings:
+  allowed_values:
+    - value: 'flush'
+      label: 'Flush'
+    - value: 'narrow'
+      label: 'Narrow'
+    - value: 'standard'
+      label: 'Standard'
+  allowed_values_function: ''
+module: options
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

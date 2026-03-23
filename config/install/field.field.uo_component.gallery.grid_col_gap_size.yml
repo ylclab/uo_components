@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.uo_component.grid_col_gap_size
+    - uo_components.uo_component_type.gallery
+  module:
+    - options
+id: uo_component.gallery.grid_col_gap_size
+field_name: grid_col_gap_size
+entity_type: uo_component
+bundle: gallery
+label: 'Grid Column Gap Size'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

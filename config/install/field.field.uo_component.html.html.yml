@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.uo_component.html
+    - uo_components.uo_component_type.html
+id: uo_component.html.html
+field_name: html
+entity_type: uo_component
+bundle: html
+label: 'HTML'
+required: false
+translatable: true
+default_value: { }
+default_value_callback: ''
+settings: { }
+field_type: string

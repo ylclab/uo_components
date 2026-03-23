@@ -1,0 +1,23 @@
+<div data-id="{{ data.id }}" data-type="{{ data.type }}" class="{{ wrapper_classes|join(' ') }}">
+    <div class="{{ component_classes|join(' ') }}">
+        {% if background_url is not empty %}
+            <div class="envelope-hero__background" style="background-image: url('{{ background_url }}')"></div>
+        {% endif %}
+        <div class="envelope-hero__container">
+            <div class="envelope-hero__photo">
+                {{ photo }}
+            </div>
+            <div class="envelope-hero__content">
+                {% if header %}
+                    <h2 class="envelope-hero__content__title">{{ header }}</h2>
+                {% endif %}
+                {% if body %}
+                    <div class="envelope-hero__content__body">{{ body }}</div>
+                {% endif %}
+                {% if link %}
+                    {{ link }}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

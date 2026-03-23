@@ -1,0 +1,28 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - uo_components
+id: uo_components.feature_layout
+field_name: feature_layout
+entity_type: uo_component
+bundle: feature
+type: list_string
+settings:
+  allowed_values:
+    - value: 'text_left'
+      label: 'Text Left'
+    - value: 'text_right'
+      label: 'Text Right'
+    - value: 'text_top'
+      label: 'Text Top'
+    - value: 'text_bottom'
+      label: 'Text Bottom'
+  allowed_values_function: ''
+module: options
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

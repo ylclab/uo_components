@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.uo_component.header
+    - uo_components.uo_component_type.feature
+id: uo_component.feature.header
+field_name: header
+entity_type: uo_component
+bundle: feature
+label: 'Header'
+required: false
+translatable: true
+default_value: { }
+default_value_callback: ''
+settings: { }
+field_type: string

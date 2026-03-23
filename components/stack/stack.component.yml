@@ -1,0 +1,18 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: UO Stack Component
+group: University of Oregon
+props:
+  type: object
+  properties:
+    component_classes:
+      type: array
+      title: Component Classes
+    data:
+      type: object
+      title: Data Attributes
+    wrapper_classes:
+      type: array
+      title: Wrapper Classes
+  slots:
+    stack_items:
+      title: Stack Items

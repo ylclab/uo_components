@@ -1,0 +1,15 @@
+name: UO Components
+package: 'University of Oregon'
+description: 'SDC integration for displaying UO Web Design Framework components.'
+
+type: module
+core_version_requirement: ^10.3 || ^11
+dependencies:
+  - drupal:entity_reference_revisions
+  - drupal:field
+  - drupal:jsonapi
+  - drupal:link
+  - drupal:media
+  - drupal:options
+  - drupal:text
+  - uo_core:uo_core

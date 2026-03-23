@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.uo_component.button_type
+    - uo_components.uo_component_type.button
+  module:
+    - options
+id: uo_component.button.button_type
+field_name: button_type
+entity_type: uo_component
+bundle: button
+label: 'Button Type'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

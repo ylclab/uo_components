@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - entity_reference_revisions
+    - uo_components
+id: uo_components.stack_items
+field_name: stack_items
+entity_type: uo_component
+bundle: stack
+type: entity_reference_revisions
+settings:
+    target_type: uo_component
+module: entity_reference_revisions
+cardinality: -1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

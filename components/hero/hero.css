@@ -1,0 +1,29 @@
+.hero--envelope--max-height-300 .envelope-hero__photo img {
+  max-height: 300px !important;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero--envelope--max-height-400 .envelope-hero__photo img {
+  max-height: 400px !important;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero--envelope--max-height-500 .envelope-hero__photo img {
+  max-height: 500px !important;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero--envelope--max-height-600 .envelope-hero__photo img {
+  max-height: 600px !important;
+  object-fit: cover;
+  object-position: center;
+}
+
+.hero--envelope--max-height-700 .envelope-hero__photo img {
+  max-height: 700px !important;
+  object-fit: cover;
+  object-position: center;
+}

@@ -1,0 +1,34 @@
+administer UO component types:
+  title: 'Administer component types'
+  description: 'Create, edit, and delete UO component types.'
+  restrict access: true
+access UO components editor:
+    title: 'Access UO components editor'
+    description: 'Access the UO components editor interface.'
+create UO components:
+  title: 'Create UO components'
+  description: 'Create new UO components of any type.'
+view UO components:
+  title: 'View UO components'
+  description: 'View published UO components.'
+view unpublished UO components:
+  title: 'View unpublished UO components'
+  description: 'View unpublished UO components.'
+edit any UO components:
+  title: 'Edit any UO components'
+  description: 'Edit any UO component entity regardless of ownership.'
+edit own UO components:
+  title: 'Edit own UO components'
+  description: 'Edit UO components created by the user.'
+delete any UO components:
+  title: 'Delete any UO components'
+  description: 'Delete any UO component entity regardless of ownership.'
+delete own UO components:
+  title: 'Delete own UO components'
+  description: 'Delete UO components created by the user.'
+revert UO component revisions:
+  title: 'Revert UO component revisions'
+  description: 'Revert UO components to previous revisions.'
+delete UO component revisions:
+  title: 'Delete UO component revisions'
+  description: 'Delete old revisions of UO components.'

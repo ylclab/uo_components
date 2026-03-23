@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.uo_component.stack_gap_size
+    - uo_components.uo_component_type.stack
+  module:
+    - options
+id: uo_component.stack.stack_gap_size
+field_name: stack_gap_size
+entity_type: uo_component
+bundle: stack
+label: 'Stack Gap Size'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string

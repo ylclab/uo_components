@@ -1,0 +1,36 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - uo_components
+id: uo_components.grid_size
+field_name: grid_size
+entity_type: uo_component
+bundle: grid
+type: list_string
+settings:
+  allowed_values:
+    - value: 'xs'
+      label: 'Extra Small'
+    - value: 'sm'
+      label: 'Small'
+    - value: 'md'
+      label: 'Medium'
+    - value: 'lg'
+      label: 'Large'
+    - value: 'xl'
+      label: 'Extra Large'
+    - value: '2xl'
+      label: '2X Large'
+    - value: '3xl'
+      label: '3X Large'
+    - value: '4xl'
+      label: '4X Large'
+  allowed_values_function: ''
+module: options
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

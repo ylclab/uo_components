@@ -1,0 +1,21 @@
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.stack--gap-none {
+    gap: 0;
+}
+
+.stack--gap-sm {
+    gap: 0.5rem;
+}
+
+.stack--gap-md {
+    gap: 1rem;
+}
+
+.stack--gap-lg {
+    gap: 1.5rem;
+}

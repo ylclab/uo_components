@@ -1,0 +1,32 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - options
+    - uo_components
+id: uo_components.hero_overlay
+field_name: hero_overlay
+entity_type: uo_component
+bundle: hero
+type: list_string
+settings:
+  allowed_values:
+    - value: 'box'
+      label: 'Boxed Text'
+    - value: 'box_large'
+      label: 'Boxed Text Padded'
+    - value: 'full'
+      label: 'Full Overlay'
+    - value: 'gradient'
+      label: 'Gradient Overlay'
+    - value: 'none'
+      label: 'No Overlay'
+    - value: 'shade'
+      label: 'Solid Overlay'
+  allowed_values_function: ''
+module: options
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

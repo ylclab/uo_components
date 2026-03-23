@@ -1,0 +1,17 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - text
+    - uo_components
+id: uo_components.body
+field_name: body
+entity_type: uo_component
+type: text_long
+settings: { }
+module: text
+cardinality: 1
+translatable: true
+indexes: { }
+persist_with_no_fields: false
+custom_storage: false

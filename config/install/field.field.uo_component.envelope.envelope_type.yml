@@ -1,0 +1,19 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.uo_component.envelope_type
+    - uo_components.uo_component_type.envelope
+  module:
+    - options
+id: uo_component.envelope.envelope_type
+field_name: envelope_type
+entity_type: uo_component
+bundle: envelope
+label: 'Envelope Type'
+required: false
+translatable: true
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_string
