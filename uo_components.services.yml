@@ -1,0 +1,16 @@
+services:
+  logger.channel.uo_components:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: ['@logger.factory', 'get']
+    arguments: ['uo_components']
+
+  uo_components.manifest:
+    class: Drupal\uo_components\Provision\UoComponentManifest
+
+  uo_components.provisioner:
+    class: Drupal\uo_components\Provision\UoComponentProvisioner
+    arguments:
+      - '@entity_type.manager'
+      - '@uo_components.manifest'
+      - '@logger.channel.uo_components'
+

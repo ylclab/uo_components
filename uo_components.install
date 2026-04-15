@@ -5,13 +5,13 @@ function uo_components_requirements($phase): array
     // TODO: Make this a runtime check instead of an install check.
     if ($phase == 'install') {
         try {
-            $entityTypeManager = Drupal::service('entity_type.manager');
+            $entityTypeManager = \Drupal::service('entity_type.manager');
             $contentTypes = $entityTypeManager->getStorage('media_type')->loadMultiple();
             if (count($contentTypes) === 0) {
-                throw new Exception('No media types found.');
+                throw new \Exception('No media types found.');
             }
         }
-        catch (Exception) {
+        catch (\Exception) {
             return [
                 'uo_components_media_type_check' => [
                     'title' => t('UO Components module installation requirement'),
@@ -29,40 +29,18 @@ function uo_components_requirements($phase): array
 function uo_components_install(): void
 {
     try {
-        $entityTypeManager = Drupal::service('entity_type.manager');
-        $mediaTypes = $entityTypeManager->getStorage('media_type')->loadMultiple();
-        if (count($mediaTypes) === 0) {
-            throw new Exception('No media types found.');
-        }
-
-        if ($mediaTypes['image']) {
-            $items = [
-                'gallery_items' => [
-                    'gallery',
-                ],
-                'photo' => [
-                    'caption_photo',
-                    'card',
-                    'feature',
-                    'hero',
-                    'photo_button',
-                ],
-            ];
-
-            foreach ($items as $field_name => $bundles) {
-                foreach ($bundles as $bundle) {
-                    $config = Drupal\field\Entity\FieldConfig::loadByName('uo_component', $bundle, $field_name);
-                    if ($config) {
-                        $handlerSettings = $config->getSetting('handler_settings');
-                        $handlerSettings['target_bundles'] = ['image' => 'image'];
-                        $config->setSetting('handler_settings', $handlerSettings);
-                        $config->save();
-                    }
-                }
-            }
-        }
+        \Drupal::service('uo_components.provisioner')->provision();
     }
-    catch (Exception $e) {
-        Drupal::logger('uo_components')->error($e->getMessage());
+    catch (\Exception $e) {
+        \Drupal::logger('uo_components')->error($e->getMessage());
     }
+}
+
+/**
+ * Backfills manifest-owned bundles and fields on existing installations.
+ */
+function uo_components_update_9001(): string
+{
+    \Drupal::service('uo_components.provisioner')->provision();
+    return 'Provisioned required UO component bundles and fields from manifest definitions.';
 }
