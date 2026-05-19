@@ -1,5 +1,7 @@
 <div data-id="{{ data.id }}" data-type="{{ data.type }}" class="{{ wrapper_classes|join(' ') }}">
     <div class="{{ component_classes|join(' ') }}">
+        {% set header_text = header is iterable and header['#markup'] is defined ? header['#markup'] : header %}
+        {% set body_text = body is iterable and body['#markup'] is defined ? body['#markup'] : body %}
         {% if background_url is not empty %}
             <div class="envelope-hero__background" style="background-image: url('{{ background_url }}')"></div>
         {% endif %}
@@ -8,10 +10,10 @@
                 {{ photo }}
             </div>
             <div class="envelope-hero__content">
-                {% if header %}
+                {% if header_text|striptags|trim is not empty %}
                     <h2 class="envelope-hero__content__title">{{ header }}</h2>
                 {% endif %}
-                {% if body %}
+                {% if body_text|striptags|trim is not empty %}
                     <div class="envelope-hero__content__body">{{ body }}</div>
                 {% endif %}
                 {% if link %}

@@ -1,12 +1,13 @@
 <div data-id="{{ data.id }}" data-type="{{ data.type }}" class="{{ wrapper_classes|join(' ') }}">
     <div class="{{ component_classes|join(' ') }}">
+        {% set header_text = header is iterable and header['#markup'] is defined ? header['#markup'] : header %}
         <div class="card-v2">
             {% if photo %}
                 <div class="card-v2__image">
                     {{ photo }}
                 </div>
             {% endif %}
-            {% if header %}
+            {% if header_text|striptags|trim is not empty %}
                 <div class="card-v2__header">
                     <div class="card-v2__title">
                         {{ header }}
