@@ -16,3 +16,5 @@ props:
   slots:
     gallery_items:
       title: Gallery Items
+    title_display:
+      title: Title Display

@@ -66,7 +66,7 @@ class UoComponentProvisioner
                     'module' => $fieldStorageDefinition['module'],
                     'settings' => $fieldStorageDefinition['settings'] ?? [],
                     'cardinality' => $fieldStorageDefinition['cardinality'] ?? 1,
-                    'translatable' => (bool) ($fieldStorageDefinition['translatable'] ?? false),
+                    'translatable' => (bool)($fieldStorageDefinition['translatable'] ?? false),
                 ]);
                 $storage->save();
                 continue;
@@ -74,7 +74,7 @@ class UoComponentProvisioner
 
             $storage->set('settings', $fieldStorageDefinition['settings'] ?? []);
             $storage->setCardinality($fieldStorageDefinition['cardinality'] ?? 1);
-            $storage->setTranslatable((bool) ($fieldStorageDefinition['translatable'] ?? false));
+            $storage->setTranslatable((bool)($fieldStorageDefinition['translatable'] ?? false));
             $storage->save();
         }
     }
@@ -99,8 +99,8 @@ class UoComponentProvisioner
                         'entity_type' => 'uo_component',
                         'bundle' => $bundleId,
                         'label' => $fieldDefinition['label'],
-                        'required' => (bool) ($fieldDefinition['required'] ?? false),
-                        'translatable' => (bool) ($fieldDefinition['translatable'] ?? false),
+                        'required' => (bool)($fieldDefinition['required'] ?? false),
+                        'translatable' => (bool)($fieldDefinition['translatable'] ?? false),
                         'settings' => $fieldDefinition['settings'] ?? [],
                         'field_type' => $fieldStorageDefinitions[$fieldName]['type'],
                     ]);
@@ -109,8 +109,8 @@ class UoComponentProvisioner
                 }
 
                 $field->setLabel($fieldDefinition['label']);
-                $field->setRequired((bool) ($fieldDefinition['required'] ?? false));
-                $field->setTranslatable((bool) ($fieldDefinition['translatable'] ?? false));
+                $field->setRequired((bool)($fieldDefinition['required'] ?? false));
+                $field->setTranslatable((bool)($fieldDefinition['translatable'] ?? false));
                 $field->set('settings', $fieldDefinition['settings'] ?? []);
                 $field->save();
             }

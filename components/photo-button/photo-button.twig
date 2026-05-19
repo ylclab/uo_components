@@ -3,8 +3,10 @@
         <div class="button-photo__photo">
             {{ photo }}
         </div>
-        <span class="button-photo__caption">
-            {{ caption }}
-        </span>
+        {% if caption is not empty %}
+            <span class="button-photo__caption">
+                {{ caption }}
+            </span>
+        {% endif %}
     </a>
 </div>

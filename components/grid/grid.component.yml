@@ -16,3 +16,5 @@ props:
   slots:
     grid_items:
       title: Grid Items
+    title_display:
+      title: Title Display

@@ -1,5 +1,5 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: UO HTML Component
+name: UO Text Component
 group: University of Oregon
 props:
   type: object
@@ -14,7 +14,7 @@ props:
       type: array
       title: Wrapper Classes
   slots:
-    html:
-      title: HTML
+    body:
+      title: Body
     title_display:
       title: Title Display

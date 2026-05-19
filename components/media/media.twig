@@ -1,10 +1,8 @@
-{% if grid_items|length != 0 %}
+{% if media_items|length != 0 %}
     <div data-id="{{ data.id }}" data-type="{{ data.type }}" class="{{ wrapper_classes|join(' ') }}">
         <div class="{{ component_classes|join(' ') }}">
-            <div style="grid-column: 1 / -1">
-                {{ title_display }}
-            </div>
-            {{ grid_items }}
+            {{ title_display }}
+            {{ media_items }}
         </div>
     </div>
 {% endif %}

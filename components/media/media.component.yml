@@ -1,6 +1,10 @@
 $schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
-name: UO Envelope Component
+name: UO Media Component
 group: University of Oregon
+libraryOverrides:
+  css:
+    component:
+      media.css: {}
 props:
   type: object
   properties:
@@ -14,7 +18,7 @@ props:
       type: array
       title: Wrapper Classes
   slots:
-    body:
-      title: Body
-    header:
-      title: Header
+    media_items:
+      title: Media Items
+    title_display:
+      title: Title Display

@@ -97,6 +97,7 @@ class UoComponentReferenceFormatter extends EntityReferenceFormatterBase impleme
                         $components[$delta] = $viewBuilder->view($entity);
                     }
                     catch (Exception) {
+                        Drupal::logger('uo_component')->warning('Unable to view @component', ['@component' => $entity]);
                         continue;
                     }
                 }
@@ -135,10 +136,7 @@ class UoComponentReferenceFormatter extends EntityReferenceFormatterBase impleme
             ];
         }
         else {
-            $elements = [
-                '#type' => 'container',
-                '#children' => $components,
-            ];
+            $elements = $components;
         }
 
         return $elements;

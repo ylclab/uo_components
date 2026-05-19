@@ -16,3 +16,5 @@ props:
   slots:
     stack_items:
       title: Stack Items
+    title_display:
+      title: Title Display

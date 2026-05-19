@@ -5,6 +5,7 @@ namespace Drupal\uo_components\Entity;
 use Drupal;
 use Drupal\Core\Entity\EntityViewBuilder;
 use Drupal\Core\Field\EntityReferenceFieldItemListInterface;
+use Drupal\Core\Render\Markup;
 use Drupal\Core\Url;
 use Drupal\file\Entity\File;
 use Drupal\media\Entity\Media;
@@ -35,14 +36,15 @@ class UoComponentViewBuilder extends EntityViewBuilder
             'button' => $this->getRenderArrayForButtonComponent($entity),
             'caption_photo' => $this->getRenderArrayForCaptionPhotoComponent($entity),
             'card' => $this->getRenderArrayForCardComponent($entity),
-            'envelope' => $this->getRenderArrayForEnvelopeComponent($entity),
             'feature' => $this->getRenderArrayForFeatureComponent($entity),
             'gallery' => $this->getRenderArrayForGalleryComponent($entity),
             'grid' => $this->getRenderArrayForGridComponent($entity),
             'hero' => $this->getRenderArrayForHeroComponent($entity),
             'html' => $this->getRenderArrayForHtmlComponent($entity),
+            'media' => $this->getRenderArrayForMediaComponent($entity),
             'photo_button' => $this->getRenderArrayForPhotoButtonComponent($entity),
             'stack' => $this->getRenderArrayForStackComponent($entity),
+            'text' => $this->getRenderArrayForTextComponent($entity),
             default => [],
         };
     }
@@ -70,7 +72,7 @@ class UoComponentViewBuilder extends EntityViewBuilder
 
         $link = $entity->get('link')->getValue();
         if (!empty($link) && isset($link[0]) && !empty($link[0]['uri']) && !empty($link[0]['title'])) {
-            $build['#props']['href'] = $link[0]['uri'];
+            $build['#props']['href'] = Url::fromUri($link[0]['uri'])->toString();
             $build['#props']['target'] = $link[0]['options']['attributes']['target'] ?? '_self';
             $build['#props']['title'] = $link[0]['title'];
         }
@@ -129,33 +131,6 @@ class UoComponentViewBuilder extends EntityViewBuilder
         return $build;
     }
 
-    protected function getRenderArrayForEnvelopeComponent(UoComponent $entity): array
-    {
-        $build = [
-            '#type' => 'component',
-            '#component' => 'uo_components:envelope',
-            '#props' => [],
-            '#slots' => [],
-        ];
-
-        $this->buildPropsComponentClasses($build, $entity);
-        $this->buildPropsData($build, $entity);
-        $this->buildPropsWrapperClasses($build, $entity);
-        $this->buildSlotsBody($build, $entity);
-        $this->buildSlotsHeader($build, $entity);
-
-        if ($entity->hasField('envelope_type') && !$entity->get('envelope_type')->isEmpty()) {
-            $build['#props']['component_classes'][] = 'envelope';
-            $build['#props']['component_classes'][] = match ($entity->get('envelope_type')->value) {
-                'flush' => 'envelope--flush',
-                'narrow' => 'envelope--narrow',
-                default => 'envelope--standard',
-            };
-        }
-
-        return $build;
-    }
-
     protected function getRenderArrayForFeatureComponent(UoComponent $entity): array
     {
         $build = [
@@ -184,43 +159,6 @@ class UoComponentViewBuilder extends EntityViewBuilder
         return $build;
     }
 
-    protected function getRenderArrayForGridComponent(UoComponent $entity): array
-    {
-        $build = [
-            '#type' => 'component',
-            '#component' => 'uo_components:grid',
-            '#props' => [],
-            '#slots' => [],
-        ];
-
-        $this->buildPropsComponentClasses($build, $entity);
-        $this->buildPropsData($build, $entity);
-        $this->buildPropsWrapperClasses($build, $entity);
-
-        $build['#props']['component_classes'][] = "grid-v2";
-
-        $this->buildPropsComponentClassesAppendGridType($build, $entity);
-        $this->buildPropsComponentClassesAppendGridSize($build, $entity);
-        $this->buildPropsComponentClassesAppendGridGapSize($build, $entity);
-        $this->buildPropsComponentClassesAppendGridColGapSize($build, $entity);
-        $this->buildPropsComponentClassesAppendGridRowGapSize($build, $entity);
-
-        $grid_items = $entity->get('grid_items');
-        if ($grid_items instanceof EntityReferenceFieldItemListInterface) {
-            foreach ($grid_items->referencedEntities() as $delta => $grid_item_entity) {
-                $build['#slots']['grid_items'][] = [
-                    '#type' => 'container',
-                    '#attributes' => [
-                        'class' => ['grid-v2__item', 'grid-v2__item__' . ($delta + 1)],
-                    ],
-                    'content' => $this->getRenderArrayForComponent($grid_item_entity),
-                ];
-            }
-        }
-
-        return $build;
-    }
-
     protected function getRenderArrayForGalleryComponent(UoComponent $entity): array
     {
         $build = [
@@ -242,64 +180,92 @@ class UoComponentViewBuilder extends EntityViewBuilder
         $this->buildPropsComponentClassesAppendGridGapSize($build, $entity);
         $this->buildPropsComponentClassesAppendGridColGapSize($build, $entity);
         $this->buildPropsComponentClassesAppendGridRowGapSize($build, $entity);
+        $this->buildSlotsTitleDisplay($build, $entity);
 
         $gallery_items = $entity->get('gallery_items');
         if ($gallery_items instanceof EntityReferenceFieldItemListInterface) {
             foreach ($gallery_items->referencedEntities() as $delta => $media_entity) {
                 if ($media_entity instanceof Media) {
+                    $access = $media_entity->access('view', null, true);
+                    if (!$access->isAllowed()) {
+                        continue;
+                    }
+
                     $file_entity = $media_entity->get('field_media_image')->entity;
                     if (!($file_entity instanceof File)) {
                         continue;
                     }
-                    $file_url = Drupal::service('file_url_generator')->generateAbsoluteString($file_entity->getFileUri());
+                    $viewBuilder = Drupal::entityTypeManager()->getViewBuilder('media');
 
                     $build['#slots']['gallery_items'][] = [
                         '#type' => 'container',
                         '#attributes' => [
                             'class' => ['grid-v2__item', 'grid-v2__item__' . ($delta + 1)],
                         ],
-                        'content' => [
+                        '#access' => $access,
+                        'gallery_item' => [
                             '#type' => 'container',
                             '#attributes' => [
                                 'class' => ['gallery-v2__item'],
                             ],
-                            'thumbnail' => [
+                            'media' => $viewBuilder->view($media_entity, 'default'),
+                            'caption' => [
                                 '#type' => 'container',
                                 '#attributes' => [
-                                    'class' => ['gallery-v2__item__thumbnail'],
+                                    'class' => ['gallery-v2__caption'],
                                 ],
-                                'image' => [
-                                    '#type' => 'html_tag',
-                                    '#tag' => 'img',
-                                    '#attributes' => [
-                                        'src' => $file_url,
-                                        'alt' => $media_entity->get('field_media_image')->alt ?? $file_entity->getFilename(),
-                                    ],
+                                'text' => [
+                                    '#type' => 'markup',
+                                    '#markup' => $media_entity->getName(),
                                 ],
                             ],
-//                            'caption' => [
-//                                '#type' => 'container',
-//                                '#attributes' => [
-//                                    'class' => ['gallery-v2__item__caption'],
-//                                ],
-//                                'text' => [
-//                                    '#type' => 'markup',
-//                                    '#markup' => $media_entity->getName()
-//                                ],
-//                            ],
-//                            'group' => [
-//                                '#type' => 'container',
-//                                '#attributes' => [
-//                                    'class' => ['gallery-v2__item__group'],
-//                                ],
-//                                'text' => [
-//                                    '#type' => 'markup',
-//                                    '#markup' => 'group1',
-//                                ],
-//                            ],
                         ],
                     ];
                 }
+            }
+        }
+
+        return $build;
+    }
+
+    protected function getRenderArrayForGridComponent(UoComponent $entity): array
+    {
+        $build = [
+            '#type' => 'component',
+            '#component' => 'uo_components:grid',
+            '#props' => [],
+            '#slots' => [],
+        ];
+
+        $this->buildPropsComponentClasses($build, $entity);
+        $this->buildPropsData($build, $entity);
+        $this->buildPropsWrapperClasses($build, $entity);
+        $this->buildSlotsTitleDisplay($build, $entity);
+
+        $build['#props']['component_classes'][] = "grid-v2";
+
+        $this->buildPropsComponentClassesAppendGridType($build, $entity);
+        $this->buildPropsComponentClassesAppendGridSize($build, $entity);
+        $this->buildPropsComponentClassesAppendGridGapSize($build, $entity);
+        $this->buildPropsComponentClassesAppendGridColGapSize($build, $entity);
+        $this->buildPropsComponentClassesAppendGridRowGapSize($build, $entity);
+
+        $grid_items = $entity->get('grid_items');
+        if ($grid_items instanceof EntityReferenceFieldItemListInterface) {
+            foreach ($grid_items->referencedEntities() as $delta => $grid_item_entity) {
+                $access = $grid_item_entity->access('view', null, true);
+                if (!$access->isAllowed()) {
+                    continue;
+                }
+
+                $build['#slots']['grid_items'][] = [
+                    '#type' => 'container',
+                    '#attributes' => [
+                        'class' => ['grid-v2__item', 'grid-v2__item__' . ($delta + 1)],
+                    ],
+                    '#access' => $access,
+                    'content' => $this->view($grid_item_entity, 'default'),
+                ];
             }
         }
 
@@ -375,13 +341,90 @@ class UoComponentViewBuilder extends EntityViewBuilder
             '#slots' => [],
         ];
 
+        $this->buildPropsComponentClasses($build, $entity);
         $this->buildPropsData($build, $entity);
+        $this->buildPropsWrapperClasses($build, $entity);
+        $this->buildSlotsTitleDisplay($build, $entity);
 
         if ($entity->hasField('html') && !$entity->get('html')->isEmpty()) {
             $build['#slots']['html'] = [
                 '#type' => 'markup',
-                '#markup' => $entity->get('html')->value,
+                '#markup' => Markup::create($entity->get('html')->value),
             ];
+        }
+
+        return $build;
+    }
+
+    protected function getRenderArrayForMediaComponent(UoComponent $entity): array
+    {
+        $build = [
+            '#type' => 'component',
+            '#component' => 'uo_components:media',
+            '#props' => [],
+            '#slots' => [],
+        ];
+
+        $this->buildPropsComponentClasses($build, $entity);
+        $this->buildPropsData($build, $entity);
+        $this->buildPropsWrapperClasses($build, $entity);
+        $this->buildSlotsTitleDisplay($build, $entity);
+
+        $media_layout = $entity->hasField('media_layout') && !$entity->get('media_layout')->isEmpty()
+            ? $entity->get('media_layout')->value
+            : 'default';
+        $media_items = $entity->get('media_items');
+
+        if ($media_items instanceof EntityReferenceFieldItemListInterface) {
+            $viewBuilder = Drupal::entityTypeManager()->getViewBuilder('media');
+            switch ($media_layout) {
+                case 'grid':
+                    break;
+                case 'list':
+                    $items = [];
+                    foreach ($media_items->referencedEntities() as $media_entity) {
+                        if ($media_entity instanceof Media) {
+                            $source_value = $media_entity->getSource()->getSourceFieldValue($media_entity);
+                            $filename = null;
+                            if (is_numeric($source_value)) {
+                                $file_entity = File::load($source_value);
+                                if (!($file_entity instanceof File)) {
+                                    continue;
+                                }
+                                $file_uri = Drupal::service('file_url_generator')->generateAbsoluteString($file_entity->getFileUri());
+                                $url = Url::fromUri($file_uri);
+                                $filename = $file_entity->getFilename();
+                            }
+                            else {
+                                $url = Url::fromUri($source_value);
+                            }
+                            $items[] = [
+                                '#type' => 'link',
+                                '#title' => $media_entity->getName(),
+                                '#url' => $url,
+                                '#attributes' => [
+                                    'class' => ['cta-button'],
+                                    'download' => $filename,
+                                ],
+                            ];
+                        }
+                    }
+                    if (!empty($items)) {
+                        $build['#slots']['media_items'][] = [
+                            '#theme' => 'item_list',
+                            '#items' => $items,
+                            '#attributes' => ['class' => ['media-list']],
+                        ];
+                    }
+                    break;
+                default:
+                    foreach ($media_items->referencedEntities() as $delta => $media_entity) {
+                        if ($media_entity instanceof Media) {
+                            $build['#slots']['media_items'][] = $viewBuilder->view($media_entity, 'default');
+                        }
+                    }
+                    break;
+            }
         }
 
         return $build;
@@ -404,10 +447,13 @@ class UoComponentViewBuilder extends EntityViewBuilder
         $build['#props']['component_classes'][] = 'button-photo';
 
         $link = $entity->get('link')->getValue();
-        if (!empty($link) && isset($link[0]) && !empty($link[0]['uri']) && !empty($link[0]['title'])) {
-            $build['#props']['href'] = $link[0]['uri'];
+        if (!empty($link) && isset($link[0]) && !empty($link[0]['uri'])) {
+            $build['#props']['href'] = Url::fromUri($link[0]['uri'])->toString();
             $build['#props']['target'] = $link[0]['options']['attributes']['target'] ?? '_self';
-            $build['#slots']['caption'] = $link[0]['title'];
+            if (!empty($link[0]['title'])) {
+                Drupal::logger('TEMPORARY')->notice($link[0]['title']);
+                $build['#slots']['caption'] = $link[0]['title'];
+            }
         }
 
         return $build;
@@ -425,6 +471,7 @@ class UoComponentViewBuilder extends EntityViewBuilder
         $this->buildPropsComponentClasses($build, $entity);
         $this->buildPropsData($build, $entity);
         $this->buildPropsWrapperClasses($build, $entity);
+        $this->buildSlotsTitleDisplay($build, $entity);
 
         $build['#props']['component_classes'][] = "stack";
         if ($entity->hasField('stack_layout') && !$entity->get('stack_layout')->isEmpty()) {
@@ -458,15 +505,39 @@ class UoComponentViewBuilder extends EntityViewBuilder
         $stack_items = $entity->get('stack_items');
         if ($stack_items instanceof EntityReferenceFieldItemListInterface) {
             foreach ($stack_items->referencedEntities() as $delta => $stack_item_entity) {
+                $access = $stack_item_entity->access('view', null, true);
+                if (!$access->isAllowed()) {
+                    continue;
+                }
+
                 $build['#slots']['stack_items'][] = [
                     '#type' => 'container',
                     '#attributes' => [
                         'class' => ['stack__item', 'stack__item__' . ($delta + 1)],
                     ],
-                    'content' => $this->getRenderArrayForComponent($stack_item_entity),
+                    '#access' => $access,
+                    'content' => $this->view($stack_item_entity, 'default'),
                 ];
             }
         }
+
+        return $build;
+    }
+
+    protected function getRenderArrayForTextComponent(UoComponent $entity): array
+    {
+        $build = [
+            '#type' => 'component',
+            '#component' => 'uo_components:text',
+            '#props' => [],
+            '#slots' => [],
+        ];
+
+        $this->buildPropsComponentClasses($build, $entity);
+        $this->buildPropsData($build, $entity);
+        $this->buildPropsWrapperClasses($build, $entity);
+        $this->buildSlotsBody($build, $entity);
+        $this->buildSlotsTitleDisplay($build, $entity);
 
         return $build;
     }
@@ -493,18 +564,7 @@ class UoComponentViewBuilder extends EntityViewBuilder
 
     private function buildPropsWrapperClasses(array &$build, UoComponent $entity): void
     {
-        if ($entity->hasField('longform_layout') && !$entity->get('longform_layout')->isEmpty()) {
-            $build['#props']['wrapper_classes'] = match ($entity->get('longform_layout')->value) {
-                'content' => ['longform-layout', 'longform-layout--content'],
-                'photos' => ['longform-layout', 'longform-layout--photos'],
-                'wide' => ['longform-layout', 'longform-layout--wide'],
-                'fullbleed' => ['longform-layout', 'longform-layout--fullbleed'],
-                default => [],
-            };
-        }
-        else {
-            $build['#props']['wrapper_classes'] = [];
-        }
+        $build['#props']['wrapper_classes'] = [];
     }
 
     private function buildPropsComponentClassesAppendGridType(array &$build, UoComponent $entity): void
@@ -716,5 +776,26 @@ class UoComponentViewBuilder extends EntityViewBuilder
         else {
             $build['#slots']['photo'] = ['#type' => 'markup', '#markup' => ''];
         }
+    }
+
+
+    private function buildSlotsTitleDisplay(array &$build, UoComponent $entity): void
+    {
+        $title_display = $entity->get('title_display')->getValue();
+        if (!empty($title_display) && isset($title_display[0]) && !empty($title_display[0]['value'])) {
+            if ($title_display[0]['value'] !== 'none') {
+                $build['#slots']['title_display'] = [
+                    '#type' => 'html_tag',
+                    '#tag' => $title_display[0]['value'],
+                    'content' => [
+                        '#type' => 'markup',
+                        '#markup' => $entity->getName(),
+                    ]
+                ];
+            }
+        }
+//        else {
+//            $build['#slots']['title_display'] = ['#type' => 'markup', '#markup' => ''];
+//        }
     }
 }
