@@ -1,8 +1,12 @@
+import { StyledEngineProvider, ThemeProvider } from '@mui/material'
 import { type EntityBase } from '@ylclab/drupal.core'
 import { assertIsHTMLElement, assertIsString, assertIsStringRecord, assertWithMessage } from '@ylclab/typescript-utils'
+import { useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
 
 import { App } from '@/components/app'
+import { type AppStateWithoutSetters, AppStoreContext, createAppStore } from '@/store'
+import { theme } from '@/theme'
 
 declare global {
   interface Window {
@@ -34,20 +38,17 @@ try {
       assertWithMessage(settings.view_mode, `View mode for instance ${id} not found`, assertIsString)
 
       createRoot(element).render((
-        <App
+        <Main
           name={id}
           state={{
             config: {
               baseUrl,
-              csrfToken: '',
               id: settings.entity_uuid,
               type: settings.entity_type as EntityBase['type'],
               fieldName: settings.field_name,
               viewMode: settings.view_mode,
             },
-            error: null,
-            operation: null,
-            uoComponents: [],
+            message: null,
           }}
         />
       ))
@@ -61,4 +62,18 @@ try {
 catch (error) {
   // eslint-disable-next-line no-console
   console.error(error)
+}
+
+function Main({ name, state }: { name: string, state: AppStateWithoutSetters }) {
+  const store = useMemo(() => createAppStore(name, state), [name, state])
+
+  return (
+    <AppStoreContext.Provider value={store}>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme} defaultMode="system">
+          <App />
+        </ThemeProvider>
+      </StyledEngineProvider>
+    </AppStoreContext.Provider>
+  )
 }

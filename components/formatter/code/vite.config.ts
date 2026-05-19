@@ -1,28 +1,27 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import { viteSingleFile } from 'vite-plugin-singlefile'
 
 import { fileURLToPath } from 'url'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   build: {
+    sourcemap: mode === 'development',
     outDir: 'dist',
-    lib: {
-      entry: 'src/main.tsx',
-      formats: ['cjs'],
-      fileName: () => 'uo-components.js',
+    rollupOptions: {
+      input: 'src/main.tsx',
+      output: {
+        format: 'iife',
+        entryFileNames: 'uo-components.js',
+      },
     },
   },
-  define: {
-    'process.env': {},
-  },
+  logLevel: 'error',
   plugins: [
     react({
       babel: {
         plugins: ['babel-plugin-react-compiler'],
       },
     }),
-    viteSingleFile(),
   ],
   resolve: {
     alias: [
@@ -33,4 +32,4 @@ export default defineConfig({
     ],
   },
   publicDir: false,
-})
+}))

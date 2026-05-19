@@ -1,5 +1,4 @@
 import { type EntityBase } from '@ylclab/drupal.core'
-import type { OperationAdd, OperationCopy, OperationDelete, OperationEdit, UoComponentCompoundTypes } from '@ylclab/uo.components'
 import { createContext, useContext } from 'react'
 import { createStore, useStore } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -7,22 +6,19 @@ import { persist } from 'zustand/middleware'
 export interface AppState {
   config: {
     baseUrl: string
-    csrfToken: string
+    csrfToken?: string
     id: EntityBase['id']
     fieldName: string
     type: EntityBase['type']
     viewMode: string
   }
-  error: unknown
-  operation: OperationAdd | OperationCopy | OperationDelete | OperationEdit | null
-  uoComponents: UoComponentCompoundTypes[]
+  message: { severity: 'success' | 'error', text: string, toast?: boolean } | null
   set: (values: AppState | Partial<AppState>) => void
   setConfigCsrfToken: (csrfToken: string) => void
-  setError: (error: unknown) => void
-  setUoComponent: (updatedItem: UoComponentCompoundTypes) => void
+  setMessage: (message: { severity: 'success' | 'error', text: string, toast?: boolean } | null) => void
 }
 
-export type AppStateWithoutSetters = Omit<AppState, 'set' | 'setConfigCsrfToken' | 'setError' | 'setUoComponent'>
+export type AppStateWithoutSetters = Omit<AppState, 'set' | 'setConfigCsrfToken' | 'setMessage'>
 
 export const createAppStore = (name: string, props: AppStateWithoutSetters) => {
   return createStore<AppState>()(persist(
@@ -30,10 +26,7 @@ export const createAppStore = (name: string, props: AppStateWithoutSetters) => {
       ...props,
       set: (values: AppState | Partial<AppState>) => set(() => ({ ...values })),
       setConfigCsrfToken: (csrfToken: string) => set(state => ({ config: { ...state.config, csrfToken } })),
-      setError: (error: unknown) => set(() => ({ error })),
-      setUoComponent: (updatedItem: UoComponentCompoundTypes) => set(state => ({
-        uoComponents: state.uoComponents.map(item => item.id === updatedItem.id ? updatedItem : item),
-      })),
+      setMessage: (message: { severity: 'success' | 'error', text: string, toast?: boolean } | null) => set(() => ({ message })),
     }),
     {
       name,

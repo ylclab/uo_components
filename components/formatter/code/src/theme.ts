@@ -16,4 +16,7 @@ export const theme = createTheme({
   },
   shape: { borderRadius: 4 },
   spacing: 8,
+  typography: {
+    fontFamily: 'inherit',
+  },
 })

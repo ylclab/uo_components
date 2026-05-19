@@ -17,6 +17,3 @@ slots:
 libraryOverrides:
   js:
     code/dist/uo-components.js: {}
-  css:
-    theme:
-      code/dist/uo-components.css: {}

@@ -1,19 +1,16 @@
 import { useSession } from '@ylclab/drupal.core'
-import { useCallback, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useAppStore } from '@/store'
 
 export function useSessionMonitor(): void {
   const baseUrl = useAppStore(state => state.config.baseUrl)
-  const error = useAppStore(state => state.error)
   const setConfigCsrfToken = useAppStore(state => state.setConfigCsrfToken)
-  const setError = useAppStore(state => state.setError)
+  const setMessage = useAppStore(state => state.setMessage)
 
-  const onError = useCallback((error: unknown) => {
-    setError(error)
-  }, [setError])
+  const [error, setError] = useState<unknown>(null)
 
-  const { load, token } = useSession({ baseUrl, onError })
+  const { load, token } = useSession({ baseUrl, onError: setError })
 
   useEffect(() => {
     setConfigCsrfToken(token)
@@ -21,8 +18,13 @@ export function useSessionMonitor(): void {
 
   useEffect(() => {
     if (!error) return
+
     if (error instanceof Error && error.message.includes('401')) {
       void load()
     }
-  }, [error, load, onError])
+
+    setMessage({ severity: 'error', text: error instanceof Error ? error.message : 'An unknown error occurred while checking your session.' })
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setError(null)
+  }, [error, load, setMessage])
 }

@@ -28,10 +28,11 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "baseUrl": ".",
+    "rootDir": ".",
+    "outDir": "dist",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ],
     },
   },
