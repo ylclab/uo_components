@@ -13,7 +13,8 @@ class UoComponentManifest
         $stringSettings = ['max_length' => 255, 'case_sensitive' => false, 'is_ascii' => false];
 
         $bodyField = ['label' => 'Body', 'required' => false, 'translatable' => true, 'settings' => []];
-        $classesField = ['label' => 'Classes', 'required' => false, 'translatable' => true, 'settings' => []];
+        $classesComponentField = ['label' => 'Component Classes', 'required' => false, 'translatable' => true, 'settings' => []];
+        $classesWrapperField = ['label' => 'Wrapper Classes', 'required' => false, 'translatable' => true, 'settings' => []];
         $headerField = ['label' => 'Header', 'required' => false, 'translatable' => true, 'settings' => []];
         $linkField = ['label' => 'Link', 'required' => false, 'translatable' => true, 'settings' => ['title' => 1, 'link_type' => 17]];
         $photoField = [
@@ -28,15 +29,6 @@ class UoComponentManifest
                     'auto_create_bundle' => '',
                 ],
             ],
-        ];
-
-        $gridDisplayFields = [
-            'grid_col_gap_size' => ['label' => 'Grid Column Gap Size', 'required' => false, 'translatable' => true, 'settings' => []],
-            'grid_gap_size' => ['label' => 'Grid Gap Size', 'required' => false, 'translatable' => true, 'settings' => []],
-            'grid_remainder' => ['label' => 'Grid Remainder', 'required' => false, 'translatable' => true, 'settings' => []],
-            'grid_row_gap_size' => ['label' => 'Grid Row Gap Size', 'required' => false, 'translatable' => true, 'settings' => []],
-            'grid_size' => ['label' => 'Grid Size', 'required' => false, 'translatable' => true, 'settings' => []],
-            'grid_type' => ['label' => 'Grid Type', 'required' => false, 'translatable' => true, 'settings' => []],
         ];
 
         $targetBundles = [
@@ -78,7 +70,14 @@ class UoComponentManifest
                     'cardinality' => 1,
                     'translatable' => true,
                 ],
-                'classes' => [
+                'classes_component' => [
+                    'type' => 'string',
+                    'module' => 'core',
+                    'settings' => $stringSettings,
+                    'cardinality' => 1,
+                    'translatable' => true,
+                ],
+                'classes_wrapper' => [
                     'type' => 'string',
                     'module' => 'core',
                     'settings' => $stringSettings,
@@ -97,6 +96,13 @@ class UoComponentManifest
                     'module' => 'core',
                     'settings' => ['target_type' => 'media'],
                     'cardinality' => -1,
+                    'translatable' => true,
+                ],
+                'gallery_show_captions' => [
+                    'type' => 'boolean',
+                    'module' => 'core',
+                    'settings' => [],
+                    'cardinality' => 1,
                     'translatable' => true,
                 ],
                 'grid_col_gap_size' => [
@@ -249,21 +255,23 @@ class UoComponentManifest
                     'settings' => ['allowed_values' => $titleDisplay, 'allowed_values_function' => ''],
                     'cardinality' => 1,
                     'translatable' => true,
-                ]
+                ],
             ],
             'bundles' => [
                 'button' => [
                     'label' => 'Button',
                     'fields' => [
                         'button_type' => ['label' => 'Button Type', 'required' => false, 'translatable' => true, 'settings' => []],
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'link' => $linkField,
                     ],
                 ],
                 'caption_photo' => [
                     'label' => 'Captioned Photo',
                     'fields' => [
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'header' => ['label' => 'Caption', 'required' => false, 'translatable' => true, 'settings' => []],
                         'photo' => $photoField,
                     ],
@@ -272,7 +280,8 @@ class UoComponentManifest
                     'label' => 'Card',
                     'fields' => [
                         'body' => $bodyField,
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'header' => $headerField,
                         'link' => $linkField,
                         'photo' => $photoField,
@@ -282,7 +291,8 @@ class UoComponentManifest
                     'label' => 'Feature Envelope',
                     'fields' => [
                         'body' => $bodyField,
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'feature_layout' => ['label' => 'Feature Layout', 'required' => false, 'translatable' => true, 'settings' => []],
                         'header' => $headerField,
                         'link' => $linkField,
@@ -292,7 +302,8 @@ class UoComponentManifest
                 'gallery' => [
                     'label' => 'Gallery',
                     'fields' => [
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'gallery_items' => [
                             'label' => 'Gallery Items',
                             'required' => false,
@@ -302,15 +313,18 @@ class UoComponentManifest
                                 'handler_settings' => ['sort' => ['field' => '_none', 'direction' => 'ASC'], 'auto_create' => false, 'auto_create_bundle' => ''],
                             ],
                         ],
-                        ...$gridDisplayFields,
+                        'gallery_show_captions' => ['label' => 'Show Captions', 'required' => false, 'translatable' => true, 'settings' => []],
+                        'grid_type' => ['label' => 'Grid Type', 'required' => false, 'translatable' => true, 'settings' => []],
                         'title_display' => ['label' => 'Title', 'required' => false, 'translatable' => true, 'settings' => []],
                     ],
                 ],
                 'grid' => [
                     'label' => 'Grid',
                     'fields' => [
-                        'classes' => $classesField,
-                        ...$gridDisplayFields,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
+                        'grid_col_gap_size' => ['label' => 'Grid Column Gap Size', 'required' => false, 'translatable' => true, 'settings' => []],
+                        'grid_gap_size' => ['label' => 'Grid Gap Size', 'required' => false, 'translatable' => true, 'settings' => []],
                         'grid_items' => [
                             'label' => 'Grid Items',
                             'required' => false,
@@ -319,10 +333,14 @@ class UoComponentManifest
                                 'handler' => 'default:uo_component',
                                 'handler_settings' => [
                                     'target_bundles' => $targetBundles,
-                                    'negate' => 0
+                                    'negate' => 0,
                                 ],
                             ],
                         ],
+                        'grid_remainder' => ['label' => 'Grid Remainder', 'required' => false, 'translatable' => true, 'settings' => []],
+                        'grid_row_gap_size' => ['label' => 'Grid Row Gap Size', 'required' => false, 'translatable' => true, 'settings' => []],
+                        'grid_size' => ['label' => 'Grid Size', 'required' => false, 'translatable' => true, 'settings' => []],
+                        'grid_type' => ['label' => 'Grid Type', 'required' => false, 'translatable' => true, 'settings' => []],
                         'title_display' => ['label' => 'Title', 'required' => false, 'translatable' => true, 'settings' => []],
                     ],
                 ],
@@ -330,7 +348,8 @@ class UoComponentManifest
                     'label' => 'Hero Envelope',
                     'fields' => [
                         'body' => $bodyField,
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'header' => $headerField,
                         'hero_layout' => ['label' => 'Hero Layout', 'required' => false, 'translatable' => true, 'settings' => []],
                         'hero_overlay' => ['label' => 'Hero Overlay', 'required' => false, 'translatable' => true, 'settings' => []],
@@ -341,7 +360,8 @@ class UoComponentManifest
                 'html' => [
                     'label' => 'HTML',
                     'fields' => [
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'html' => ['label' => 'HTML', 'required' => false, 'translatable' => true, 'settings' => []],
                         'title_display' => ['label' => 'Title', 'required' => false, 'translatable' => true, 'settings' => []],
                     ],
@@ -349,7 +369,8 @@ class UoComponentManifest
                 'media' => [
                     'label' => 'Media',
                     'fields' => [
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'media_items' => [
                             'label' => 'Media Items',
                             'required' => false,
@@ -366,7 +387,8 @@ class UoComponentManifest
                 'photo_button' => [
                     'label' => 'Photo Button',
                     'fields' => [
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'link' => $linkField,
                         'photo' => $photoField,
                     ],
@@ -374,7 +396,8 @@ class UoComponentManifest
                 'stack' => [
                     'label' => 'Stack',
                     'fields' => [
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'stack_gap_size' => ['label' => 'Stack Gap Size', 'required' => false, 'translatable' => true, 'settings' => []],
                         'stack_items' => [
                             'label' => 'Stack Items',
@@ -384,7 +407,7 @@ class UoComponentManifest
                                 'handler' => 'default:uo_component',
                                 'handler_settings' => [
                                     'target_bundles' => $targetBundles,
-                                    'negate' => 0
+                                    'negate' => 0,
                                 ],
                             ],
                         ],
@@ -396,7 +419,8 @@ class UoComponentManifest
                     'label' => 'Text',
                     'fields' => [
                         'body' => $bodyField,
-                        'classes' => $classesField,
+                        'classes_component' => $classesComponentField,
+                        'classes_wrapper' => $classesWrapperField,
                         'title_display' => ['label' => 'Title', 'required' => false, 'translatable' => true, 'settings' => []],
                     ],
                 ],

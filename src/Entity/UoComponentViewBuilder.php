@@ -172,15 +172,18 @@ class UoComponentViewBuilder extends EntityViewBuilder
         $this->buildPropsData($build, $entity);
         $this->buildPropsWrapperClasses($build, $entity);
 
-        $build['#props']['component_classes'][] = "grid-v2";
+        $build['#props']['component_classes'][] = "grid";
         $build['#props']['component_classes'][] = "gallery-v2";
 
         $this->buildPropsComponentClassesAppendGridType($build, $entity);
-        $this->buildPropsComponentClassesAppendGridSize($build, $entity);
-        $this->buildPropsComponentClassesAppendGridGapSize($build, $entity);
-        $this->buildPropsComponentClassesAppendGridColGapSize($build, $entity);
-        $this->buildPropsComponentClassesAppendGridRowGapSize($build, $entity);
         $this->buildSlotsTitleDisplay($build, $entity);
+
+        $build['#props']['component_classes'] = array_map(
+            static fn(string $class): string => str_starts_with($class, 'grid-v2')
+                ? preg_replace('/^grid-v2/', 'grid', $class)
+                : $class,
+            $build['#props']['component_classes']
+        );
 
         $gallery_items = $entity->get('gallery_items');
         if ($gallery_items instanceof EntityReferenceFieldItemListInterface) {
@@ -197,10 +200,10 @@ class UoComponentViewBuilder extends EntityViewBuilder
                     }
                     $viewBuilder = Drupal::entityTypeManager()->getViewBuilder('media');
 
-                    $build['#slots']['gallery_items'][] = [
+                    $build['#slots']['gallery_items'][$delta] = [
                         '#type' => 'container',
                         '#attributes' => [
-                            'class' => ['grid-v2__item', 'grid-v2__item__' . ($delta + 1)],
+                            'class' => ['grid__item', 'grid__item__' . ($delta + 1)],
                         ],
                         '#access' => $access,
                         'gallery_item' => [
@@ -209,18 +212,22 @@ class UoComponentViewBuilder extends EntityViewBuilder
                                 'class' => ['gallery-v2__item'],
                             ],
                             'media' => $viewBuilder->view($media_entity, 'default'),
-                            'caption' => [
-                                '#type' => 'container',
-                                '#attributes' => [
-                                    'class' => ['gallery-v2__caption'],
-                                ],
-                                'text' => [
-                                    '#type' => 'markup',
-                                    '#markup' => $media_entity->getName(),
-                                ],
-                            ],
                         ],
                     ];
+
+                    if ($entity->get('gallery_show_captions')->value) {
+                        $build['#slots']['gallery_items'][$delta]['gallery_item']['caption'] = [
+                            '#type' => 'container',
+                            '#attributes' => [
+                                'class' => ['gallery-v2__caption', 'text-align-center'],
+                                'style' => 'display: block',
+                            ],
+                            'text' => [
+                                '#type' => 'markup',
+                                '#markup' => $media_entity->getName(),
+                            ],
+                        ];
+                    }
                 }
             }
         }
@@ -451,7 +458,6 @@ class UoComponentViewBuilder extends EntityViewBuilder
             $build['#props']['href'] = Url::fromUri($link[0]['uri'])->toString();
             $build['#props']['target'] = $link[0]['options']['attributes']['target'] ?? '_self';
             if (!empty($link[0]['title'])) {
-                Drupal::logger('TEMPORARY')->notice($link[0]['title']);
                 $build['#slots']['caption'] = $link[0]['title'];
             }
         }
@@ -544,8 +550,8 @@ class UoComponentViewBuilder extends EntityViewBuilder
 
     private function buildPropsComponentClasses(array &$build, UoComponent $entity): void
     {
-        if ($entity->hasField('classes') && !$entity->get('classes')->isEmpty()) {
-            foreach (explode(' ', $entity->get('classes')->value) as $class) {
+        if ($entity->hasField('classes_component') && !$entity->get('classes_component')->isEmpty()) {
+            foreach (explode(' ', $entity->get('classes_component')->value) as $class) {
                 $build['#props']['component_classes'][] = $class;
             }
         }
@@ -564,7 +570,14 @@ class UoComponentViewBuilder extends EntityViewBuilder
 
     private function buildPropsWrapperClasses(array &$build, UoComponent $entity): void
     {
-        $build['#props']['wrapper_classes'] = [];
+        if ($entity->hasField('classes_wrapper') && !$entity->get('classes_wrapper')->isEmpty()) {
+            foreach (explode(' ', $entity->get('classes_wrapper')->value) as $class) {
+                $build['#props']['wrapper_classes'][] = $class;
+            }
+        }
+        else {
+            $build['#props']['wrapper_classes'] = [];
+        }
     }
 
     private function buildPropsComponentClassesAppendGridType(array &$build, UoComponent $entity): void
@@ -790,12 +803,9 @@ class UoComponentViewBuilder extends EntityViewBuilder
                     'content' => [
                         '#type' => 'markup',
                         '#markup' => $entity->getName(),
-                    ]
+                    ],
                 ];
             }
         }
-//        else {
-//            $build['#slots']['title_display'] = ['#type' => 'markup', '#markup' => ''];
-//        }
     }
 }
