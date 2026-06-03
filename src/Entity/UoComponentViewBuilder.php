@@ -210,6 +210,7 @@ class UoComponentViewBuilder extends EntityViewBuilder
                             '#type' => 'container',
                             '#attributes' => [
                                 'class' => ['gallery-v2__item'],
+                                'style' => 'width: fit-content;',
                             ],
                             'media' => $viewBuilder->view($media_entity, 'default'),
                         ],
