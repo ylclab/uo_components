@@ -1,7 +1,7 @@
 {% if media_items|length != 0 %}
     <div data-id="{{ data.id }}" data-type="{{ data.type }}" class="{{ wrapper_classes|join(' ') }}">
+        {{ title_display }}
         <div class="{{ component_classes|join(' ') }}">
-            {{ title_display }}
             {{ media_items }}
         </div>
     </div>
