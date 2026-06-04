@@ -773,25 +773,25 @@ class UoComponentViewBuilder extends EntityViewBuilder
         $image = $entity->get('photo');
         if ($image instanceof EntityReferenceFieldItemListInterface && !$image->isEmpty()) {
             $referenced_entities = $image->referencedEntities();
-            $media_entity = reset($referenced_entities);
-            $file_entity = $media_entity->get('field_media_image')->entity;
-            if ($file_entity instanceof File) {
-                $file_url = Drupal::service('file_url_generator')->generateAbsoluteString($file_entity->getFileUri());
-                $build['#slots']['photo'] = [
-                    '#type' => 'html_tag',
-                    '#tag' => 'img',
-                    '#attributes' => [
-                        'src' => $file_url,
-                        'alt' => $media_entity->get('field_media_image')->alt ?? $file_entity->getFilename(),
-                    ],
-                ];
+            if ($media_entity = reset($referenced_entities)) {
+                $file_entity = $media_entity->get('field_media_image')->entity;
+                if ($file_entity instanceof File) {
+                    $file_url = Drupal::service('file_url_generator')->generateAbsoluteString($file_entity->getFileUri());
+                    $build['#slots']['photo'] = [
+                        '#type' => 'html_tag',
+                        '#tag' => 'img',
+                        '#attributes' => [
+                            'src' => $file_url,
+                            'alt' => $media_entity->get('field_media_image')->alt ?? $file_entity->getFilename(),
+                        ],
+                    ];
+                }
             }
         }
         else {
             $build['#slots']['photo'] = ['#type' => 'markup', '#markup' => ''];
         }
     }
-
 
     private function buildSlotsTitleDisplay(array &$build, UoComponent $entity): void
     {
