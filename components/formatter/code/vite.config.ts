@@ -1,7 +1,7 @@
-import react from '@vitejs/plugin-react'
+import { fileURLToPath } from 'node:url'
+import babel from '@rolldown/plugin-babel'
+import react, { reactCompilerPreset } from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-
-import { fileURLToPath } from 'url'
 
 export default defineConfig(({ mode }) => ({
   build: {
@@ -17,11 +17,10 @@ export default defineConfig(({ mode }) => ({
   },
   logLevel: 'error',
   plugins: [
-    react({
-      babel: {
-        plugins: ['babel-plugin-react-compiler'],
-      },
+    babel({
+      presets: [reactCompilerPreset()],
     }),
+    react(),
   ],
   resolve: {
     alias: [

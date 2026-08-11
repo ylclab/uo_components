@@ -1,5 +1,5 @@
 import { StyledEngineProvider, ThemeProvider } from '@mui/material'
-import { type EntityBase } from '@ylclab/drupal.core'
+import type { EntityBase } from '@ylclab/drupal.core'
 import { assertIsHTMLElement, assertIsString, assertIsStringRecord, assertWithMessage } from '@ylclab/typescript-utils'
 import { useMemo } from 'react'
 import { createRoot } from 'react-dom/client'
@@ -37,7 +37,7 @@ try {
       assertWithMessage(settings.field_name, `Field name for instance ${id} not found`, assertIsString)
       assertWithMessage(settings.view_mode, `View mode for instance ${id} not found`, assertIsString)
 
-      createRoot(element).render((
+      createRoot(element).render(
         <Main
           name={id}
           state={{
@@ -50,21 +50,13 @@ try {
             },
             message: null,
           }}
-        />
-      ))
-    }
-    catch (error) {
-      // eslint-disable-next-line no-console
-      console.error(error)
-    }
+        />,
+      )
+    } catch (_error) {}
   }
-}
-catch (error) {
-  // eslint-disable-next-line no-console
-  console.error(error)
-}
+} catch (_error) {}
 
-function Main({ name, state }: { name: string, state: AppStateWithoutSetters }) {
+function Main({ name, state }: { name: string; state: AppStateWithoutSetters }) {
   const store = useMemo(() => createAppStore(name, state), [name, state])
 
   return (

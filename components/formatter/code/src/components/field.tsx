@@ -1,5 +1,12 @@
 import { assertIsEntityBase, type EntityBase, type JsonApiOptions, useEntityLoad, useEntityUpdate } from '@ylclab/drupal.core'
-import { appendMetadataToFieldUoComponentItems, assertIsUoComponentCompoundTypes, type FieldUoComponent, FieldUoComponentsFull, type UoComponentCompoundTypes, type UoComponentFullSlotProps } from '@ylclab/uo.components'
+import {
+  appendMetadataToFieldUoComponentItems,
+  assertIsUoComponentCompoundTypes,
+  type FieldUoComponent,
+  FieldUoComponentsFull,
+  type UoComponentCompoundTypes,
+  type UoComponentFullSlotProps,
+} from '@ylclab/uo.components'
 import { DrupalJsonApiParams } from 'drupal-jsonapi-params'
 
 import { useSessionMonitor } from '@/hooks/session-monitor'
@@ -14,12 +21,12 @@ function guard(value: unknown): asserts value is EntityBase & Record<string, unk
 }
 
 export function Field() {
-  const baseUrl = useAppStore(state => state.config.baseUrl)
-  const csrfToken = useAppStore(state => state.config.csrfToken)
-  const fieldName = useAppStore(state => state.config.fieldName)
-  const id = useAppStore(state => state.config.id)
-  const resourceType = useAppStore(state => state.config.type)
-  const setMessage = useAppStore(state => state.setMessage)
+  const baseUrl = useAppStore((state) => state.config.baseUrl)
+  const csrfToken = useAppStore((state) => state.config.csrfToken)
+  const fieldName = useAppStore((state) => state.config.fieldName)
+  const id = useAppStore((state) => state.config.id)
+  const resourceType = useAppStore((state) => state.config.type)
+  const setMessage = useAppStore((state) => state.setMessage)
 
   useSessionMonitor()
 
@@ -34,7 +41,7 @@ export function Field() {
     options,
     params,
     resourceType,
-    onError: error => setMessage({ severity: 'error', text: error instanceof Error ? error.message : 'Unknown error' }),
+    onError: (error) => setMessage({ severity: 'error', text: error instanceof Error ? error.message : 'Unknown error' }),
   })
 
   const { updateEntity } = useEntityUpdate({
@@ -51,7 +58,7 @@ export function Field() {
     options,
   }
 
-  const value = entity ? Array.isArray(entity[fieldName]) ? entity[fieldName] : [entity[fieldName]] : null
+  const value = entity ? (Array.isArray(entity[fieldName]) ? entity[fieldName] : [entity[fieldName]]) : null
 
   const onChange = async (value: FieldUoComponent | null) => {
     try {
@@ -62,8 +69,7 @@ export function Field() {
         try {
           assertIsUoComponentCompoundTypes(component)
           uoComponents.push(component)
-        }
-        catch (error) {
+        } catch (error) {
           setMessage({ severity: 'error', text: error instanceof Error ? error.message : 'Unknown error', toast: true })
         }
       }
@@ -78,9 +84,7 @@ export function Field() {
           id,
           type: resourceType,
           [fieldName]: appendMetadataToFieldUoComponentItems(value),
-          relationshipNames: [
-            fieldName,
-          ],
+          relationshipNames: [fieldName],
         },
       })
 
@@ -88,8 +92,7 @@ export function Field() {
       setMessage({ severity: 'success', text: 'Field updated successfully', toast: true })
 
       await load()
-    }
-    catch (error) {
+    } catch (error) {
       setMessage({ severity: 'error', text: error instanceof Error ? error.message : 'Unknown error', toast: true })
     }
   }
@@ -103,7 +106,7 @@ export function Field() {
       value={value}
       AddProps={{ addLabel: 'Add a Component' }}
       onChange={onChange}
-      onError={error => setMessage({ severity: 'error', text: error instanceof Error ? error.message : 'Unknown error', toast: true })}
+      onError={(error) => setMessage({ severity: 'error', text: error instanceof Error ? error.message : 'Unknown error', toast: true })}
     />
   )
 }

@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react'
 import { useAppStore } from '@/store'
 
 export function useSessionMonitor(): void {
-  const baseUrl = useAppStore(state => state.config.baseUrl)
-  const setConfigCsrfToken = useAppStore(state => state.setConfigCsrfToken)
-  const setMessage = useAppStore(state => state.setMessage)
+  const baseUrl = useAppStore((state) => state.config.baseUrl)
+  const setConfigCsrfToken = useAppStore((state) => state.setConfigCsrfToken)
+  const setMessage = useAppStore((state) => state.setMessage)
 
   const [error, setError] = useState<unknown>(null)
 
