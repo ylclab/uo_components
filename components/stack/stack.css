@@ -19,3 +19,7 @@
 .stack--gap-lg {
     gap: 1.5rem;
 }
+
+.stack.stack--horizontal {
+    flex-direction: row;
+}
